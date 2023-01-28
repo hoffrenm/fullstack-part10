@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 const theme = {
   colors: {
     textPrimary: '#24292e',
@@ -7,6 +9,7 @@ const theme = {
     mainBackgroundColor: '#e1e4e8',
     appBarBackgroundColor: '#24292e',
     tabText: '#FFFFFF',
+    error: '#d73a4a',
   },
   fontSizes: {
     small: 12,
@@ -14,7 +17,11 @@ const theme = {
     subheading: 16,
   },
   fonts: {
-    main: 'System',
+    main: Platform.select({
+      ios: 'Arial',
+      android: 'Roboto',
+      default: 'System',
+    })
   },
   fontWeights: {
     light: '200',
