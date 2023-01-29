@@ -9,10 +9,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppBarTab = ({ text, location }) => {
+const AppBarTab = ({ text, ...props }) => {
   return (
     <View style={styles.tabItem}>
-      <Link to={location}>
+      <Link {...props}>
         <Text color='white'>
           {text}
         </Text>
