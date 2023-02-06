@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
 
 const RepositoryItem = ({ repository }) => {
   return (
-    <View style={styles.container}>
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.flexContainer}>
         <Image source={{ uri: repository.ownerAvatarUrl }} style={styles.logo} />
         <View style={styles.infoContainer}>
           <Text fontWeight='bold'>{repository.fullName}</Text>
           <Text color='muted' style={{ flexShrink: 1 }}>{repository.description}</Text>
-            <Text style={styles.languageText} color='white'>{repository.language}</Text>
+          <Text style={styles.languageText} color='white'>{repository.language}</Text>
         </View>
       </View>
       <StatsBar repository={repository} />

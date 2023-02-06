@@ -13,13 +13,7 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  const { repositories, loading, error } = useRepositories();
-
-  if (loading) return;
-
-  if (error) console.log(`Èrror loading repositories: ${error.message}`);
-
+export const RepositoryListContainer = ({ repositories }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map(edge => edge.node)
     : [];
@@ -34,6 +28,15 @@ const RepositoryList = () => {
       )}
     />
   );
+};
+
+const RepositoryList = () => {
+  const { repositories, loading, error } = useRepositories();
+
+  if (loading) return;
+  if (error) console.log(`Èrror loading repositories: ${error.message}`);
+
+  return <RepositoryListContainer repositories={repositories} />;
 };
 
 export default RepositoryList;
