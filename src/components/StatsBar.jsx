@@ -3,6 +3,7 @@ import StatsBarItem from "./StatsBarItem";
 
 const styles = StyleSheet.create({
   flexContainer: {
+    backgroundColor: 'white',
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: 'row',

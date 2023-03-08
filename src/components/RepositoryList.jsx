@@ -1,10 +1,11 @@
 import { FlatList, View, StyleSheet } from 'react-native';
 import useRepositories from '../hooks/useRepository';
 import RepositoryItem from './RepositoryItem';
+import theme from '../theme';
 
 const styles = StyleSheet.create({
   listContainer: {
-    backgroundColor: '#F1F1F1',
+    backgroundColor: theme.colors.mainBackgroundColor,
   },
   separator: {
     height: 15,
