@@ -33,7 +33,10 @@ const AppBar = () => {
         <AppBarTab text="Repositories" to="/" />
 
         {user ?
-          <AppBarTab text="Sign out" onPress={() => signOut()}></AppBarTab>
+          <>
+            <AppBarTab text="Create a review" to="/newreview"></AppBarTab>
+            <AppBarTab text="Sign out" onPress={() => signOut()}></AppBarTab>
+          </>
           :
           <AppBarTab text="Sign in" to="/signin" />
         }
