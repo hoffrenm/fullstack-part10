@@ -1,10 +1,10 @@
-import { StyleSheet, View } from 'react-native';
-import RepositoryList from './RepositoryList';
-import AppBar from './AppBar';
-import { Navigate, Route, Routes } from 'react-router-native';
-import SignIn from './SignIn';
-import SingleRepository from './SingleRepository';
-import NewReview from './NewReview';
+import { StyleSheet, View } from "react-native";
+import RepositoryList from "../Repository/RepositoryList";
+import AppBar from "./AppBar";
+import { Navigate, Route, Routes } from "react-router-native";
+import SignIn from "../Signin/SignIn";
+import SingleRepository from "../Repository/SingleRepository";
+import NewReview from "../Review/NewReview";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +25,6 @@ const Main = () => {
         <Route path="/" element={<RepositoryList />} exact />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
     </View>
   );
 };
