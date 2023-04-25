@@ -24,9 +24,25 @@ query Repositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirec
 `;
 
 export const ME = gql`
-  query Me {
+  query Me($includeReviews: Boolean = false) {
     me {
       id
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            id
+            userId
+            repositoryId
+            rating
+            createdAt
+            text
+            repository {
+              id
+              fullName
+            }
+          }
+        }
+      }
     }
   }
 `;

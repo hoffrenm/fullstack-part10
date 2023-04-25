@@ -7,6 +7,7 @@ const OrderPicker = ({
 }) => {
   return (
     <Picker
+      style={{ height: 40, marginHorizontal: 5, marginBottom: 15,}}
       selectedValue={selectedOrder}
       onValueChange={(itemValue) => {
         setSelectedOrder(itemValue);

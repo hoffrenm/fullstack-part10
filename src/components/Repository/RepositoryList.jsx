@@ -1,9 +1,10 @@
-import { FlatList, View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { ItemSeparator } from '../layout/ItemSeparator';
 import useRepositories from "../../hooks/useRepository";
 import RepositoryItem from "./RepositoryItem";
 import theme from "../../theme";
-import OrderPicker from "./OrderPicker";
-import { useEffect, useState } from "react";
+import FilterBar from './FilterBar';
 
 const styles = StyleSheet.create({
   listContainer: {
@@ -14,13 +15,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
 export const RepositoryListContainer = ({
   repositories,
+  keyword,
   selectedOrder,
   setSelectedOrder,
   handleOrderChange,
+  handleSearchChange,
+  handleKeywordChange
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -31,11 +33,13 @@ export const RepositoryListContainer = ({
       style={styles.listContainer}
       data={repositoryNodes}
       ListHeaderComponent={
-        <OrderPicker
+        <FilterBar
+          keyword={keyword}
+          handleSearchChange={handleSearchChange}
           handleOrderChange={handleOrderChange}
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
-        />
+          handleKeywordChange={handleKeywordChange} />
       }
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => <RepositoryItem repository={item} />}
@@ -45,45 +49,47 @@ export const RepositoryListContainer = ({
 
 const RepositoryList = () => {
   const [selectedOrder, setSelectedOrder] = useState();
-  const [orderParameters, setOrderParameters] = useState();
+  const [order, setOrder] = useState("CREATED_AT");
+  const [sort, setSort] = useState("DESC");
+  const [keyword, setKeyword] = useState("");
 
-  const { repositories, loading, error } = useRepositories({
-    orderParameters,
+  const { repositories, error } = useRepositories({
+    filterParameters: { orderBy: order, orderDirection: sort, searchKeyword: keyword }
   });
 
   useEffect(() => {
     setSelectedOrder("default");
-    setOrderParameters({ orderBy: "CREATED_AT", orderDirection: "ASC" });
+    setOrder("CREATED_AT");
+    setSort("DESC");
+    setKeyword("");
   }, []);
 
   const handleOrderChange = (value) => {
     switch (value) {
       case "ratingHighest":
-        setOrderParameters({
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "DESC",
-        });
+        setOrder("RATING_AVERAGE");
+        setSort("DESC");
         break;
       case "ratingLowest":
-        setOrderParameters({
-          orderBy: "RATING_AVERAGE",
-          orderDirection: "ASC",
-        });
+        setOrder("RATING_AVERAGE");
+        setSort("ASC");
         break;
       default:
-        setOrderParameters({ orderBy: "CREATED_AT", orderDirection: "ASC" });
+        setOrder("CREATED_AT");
+        setSort("DESC");
     }
   };
 
-  if (loading) return;
-  if (error) console.log(`Èrror loading repositories: ${error.message}`);
+  if (error) console.log(`Error loading repositories: ${error.message}`);
 
   return (
     <RepositoryListContainer
       repositories={repositories}
+      keyword={keyword}
       selectedOrder={selectedOrder}
       setSelectedOrder={setSelectedOrder}
       handleOrderChange={handleOrderChange}
+      handleKeywordChange={setKeyword}
     />
   );
 };

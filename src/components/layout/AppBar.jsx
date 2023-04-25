@@ -20,7 +20,7 @@ const AppBar = () => {
 
   if (loading) return;
 
-  const user = data.me ? data.me : undefined;
+  const user = data?.me ? data.me : undefined;
 
   const signOut = async () => {
     await authStorage.removeAccessToken();
@@ -35,6 +35,7 @@ const AppBar = () => {
         {user ? (
           <>
             <AppBarTab text="Create a review" to="/newreview"></AppBarTab>
+            <AppBarTab text="My reviews" to="/myreviews"></AppBarTab>
             <AppBarTab text="Sign out" onPress={() => signOut()}></AppBarTab>
           </>
         ) : (
