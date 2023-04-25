@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
 import { ItemSeparator } from '../layout/ItemSeparator';
-import useRepositories from "../../hooks/useRepository";
-import RepositoryItem from "./RepositoryItem";
-import theme from "../../theme";
+import useRepositories from '../../hooks/useRepositories';
+import RepositoryItem from './RepositoryItem';
+import theme from '../../theme';
 import FilterBar from './FilterBar';
 
 const styles = StyleSheet.create({
@@ -22,7 +22,8 @@ export const RepositoryListContainer = ({
   setSelectedOrder,
   handleOrderChange,
   handleSearchChange,
-  handleKeywordChange
+  handleKeywordChange,
+  onEndReach,
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -32,6 +33,8 @@ export const RepositoryListContainer = ({
     <FlatList
       style={styles.listContainer}
       data={repositoryNodes}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
       ListHeaderComponent={
         <FilterBar
           keyword={keyword}
@@ -39,7 +42,8 @@ export const RepositoryListContainer = ({
           handleOrderChange={handleOrderChange}
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
-          handleKeywordChange={handleKeywordChange} />
+          handleKeywordChange={handleKeywordChange}
+        />
       }
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => <RepositoryItem repository={item} />}
@@ -49,34 +53,42 @@ export const RepositoryListContainer = ({
 
 const RepositoryList = () => {
   const [selectedOrder, setSelectedOrder] = useState();
-  const [order, setOrder] = useState("CREATED_AT");
-  const [sort, setSort] = useState("DESC");
-  const [keyword, setKeyword] = useState("");
+  const [order, setOrder] = useState('CREATED_AT');
+  const [sort, setSort] = useState('DESC');
+  const [keyword, setKeyword] = useState('');
 
-  const { repositories, error } = useRepositories({
-    filterParameters: { orderBy: order, orderDirection: sort, searchKeyword: keyword }
+  const { repositories, fetchMore, error } = useRepositories({
+    filterParameters: {
+      orderBy: order,
+      orderDirection: sort,
+      searchKeyword: keyword,
+    },
   });
 
   useEffect(() => {
-    setSelectedOrder("default");
-    setOrder("CREATED_AT");
-    setSort("DESC");
-    setKeyword("");
+    setSelectedOrder('default');
+    setOrder('CREATED_AT');
+    setSort('DESC');
+    setKeyword('');
   }, []);
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   const handleOrderChange = (value) => {
     switch (value) {
-      case "ratingHighest":
-        setOrder("RATING_AVERAGE");
-        setSort("DESC");
+      case 'ratingHighest':
+        setOrder('RATING_AVERAGE');
+        setSort('DESC');
         break;
-      case "ratingLowest":
-        setOrder("RATING_AVERAGE");
-        setSort("ASC");
+      case 'ratingLowest':
+        setOrder('RATING_AVERAGE');
+        setSort('ASC');
         break;
       default:
-        setOrder("CREATED_AT");
-        setSort("DESC");
+        setOrder('CREATED_AT');
+        setSort('DESC');
     }
   };
 
@@ -90,6 +102,7 @@ const RepositoryList = () => {
       setSelectedOrder={setSelectedOrder}
       handleOrderChange={handleOrderChange}
       handleKeywordChange={setKeyword}
+      onEndReach={onEndReach}
     />
   );
 };

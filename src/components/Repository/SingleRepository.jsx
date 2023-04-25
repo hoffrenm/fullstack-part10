@@ -5,35 +5,35 @@ import {
   Button,
   Linking,
   FlatList,
-} from "react-native";
-import Text from "../layout/Text";
-import StatsBar from "./StatsBar";
-import theme from "../../theme";
-import { useParams } from "react-router-native";
-import { useQuery } from "@apollo/client";
-import { GET_REPOSITORY } from "../../graphql/queries";
-import { format, parseISO } from "date-fns";
+} from 'react-native';
+import Text from '../layout/Text';
+import StatsBar from './StatsBar';
+import theme from '../../theme';
+import { useParams } from 'react-router-native';
+import { format, parseISO } from 'date-fns';
+import { ItemSeparator } from '../layout/ItemSeparator';
+import useRepository from '../../hooks/useRepository';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 10,
   },
   flexContainer: {
     paddingTop: 10,
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     flexShrink: 1,
   },
   listHeaderContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     paddingLeft: 20,
     paddingRight: 20,
     paddingBottom: 10,
     marginBottom: 15,
   },
   infoContainer: {
-    flexDirection: "column",
+    flexDirection: 'column',
     paddingLeft: 15,
     flexShrink: 1,
   },
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: theme.colors.primary,
     borderRadius: 50 / 2,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 10,
     marginRight: 10,
   },
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 5,
     backgroundColor: theme.colors.primary,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
 });
 
@@ -93,7 +93,7 @@ const RepositoryInfo = ({ repository }) => {
 };
 
 const ReviewItem = ({ review }) => {
-  const date = format(parseISO(review.createdAt), "dd.MM.yyyy");
+  const date = format(parseISO(review.createdAt), 'dd.MM.yyyy');
 
   return (
     <View style={styles.container}>
@@ -104,7 +104,7 @@ const ReviewItem = ({ review }) => {
           </Text>
         </View>
         <View
-          style={{ display: "flex", flexDirection: "column", flexShrink: 1 }}
+          style={{ display: 'flex', flexDirection: 'column', flexShrink: 1 }}
         >
           <Text fontWeight="bold">{review.user.username}</Text>
           <Text>{date}</Text>
@@ -115,26 +115,24 @@ const ReviewItem = ({ review }) => {
   );
 };
 
-const ItemSeparator = () => <View style={{ height: 15 }} />;
-
 const SingleRepository = () => {
   const { id } = useParams();
-  const { data, loading } = useQuery(GET_REPOSITORY, {
-    fetchPolicy: "cache-and-network",
-    variables: { repositoryId: id },
-  });
+  const { repository, reviews, loading, fetchMore } = useRepository({ id });
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   if (loading) return;
 
-  const { repository } = data;
-  const reviewNodes = repository.reviews;
-
-  const reviews = reviewNodes ? reviewNodes.edges.map((edge) => edge.node) : [];
+  const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : [];
 
   return (
     <FlatList
       style={styles.listContainer}
-      data={reviews}
+      data={reviewNodes}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
